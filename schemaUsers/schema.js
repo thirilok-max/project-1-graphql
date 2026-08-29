@@ -32,7 +32,7 @@ export const schema=buildSchema(`
     }
     
     type Mutation{
-       input(email:String! password:String):User!
+       login(email:String! password:String):User!
        register(id:ID! name: String! email: String! password: String!):User!, 
        createProduct(id:ID! name:String! price:String! date_of_manufacture:String! date_of_expires:String!):Product,
        updateProduct(id:ID! name:String!):Product,
