@@ -1,4 +1,4 @@
-import {buildSchema} from "graphql";
+import { buildSchema } from "graphql";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import Product from "../models/Product.js";
@@ -6,9 +6,9 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const schema=buildSchema(`
+export const schema =buildSchema(`
     type User{
-        id:ID!
+        id:ID
         name:String!
         email:String!
         password:String!
@@ -22,8 +22,8 @@ export const schema=buildSchema(`
        date_of_expires:String!
     }
 
-    type Users {
-       user: User!
+    type AuthResponse {
+       user:[User!]!
        token: String!
     }
 
@@ -35,7 +35,7 @@ export const schema=buildSchema(`
     }
     
     type Mutation{
-       Users(name:String! email:String! password:String):User!
+       login(id:ID name:String email:String! password:String!):AuthResponse!,
        register(id:ID! name: String! email: String! password: String!):User!, 
        createProduct(id:ID! name:String! price:String! date_of_manufacture:String! date_of_expires:String!):Product,
        updateProduct(id:ID! name:String!):Product,
@@ -43,41 +43,45 @@ export const schema=buildSchema(`
     }
     `);
 
-export const rootSchema={
-    register:async({name,email,password})=>{
+export const rootSchema = {
+    register: async ({ name, email, password }) => {
         const saltRounds = 10;
-        const hashedPassword=await bcrypt.hash(password,saltRounds)
-       const registerUser=await User.create({name,email,password:hashedPassword});
-       return registerUser;
+        const hashedPassword = await bcrypt.hash(password, saltRounds)
+        const registerUser = await User.create({ name, email, password
+            : hashedPassword
+         });
+        return registerUser;
     },
- 
-    Users:async({name,email,password})=>{
-        const Users=await User.findOne({where:{email:email}});
-        const match=await bcrypt.compare(password,Users.password);
-        if(!match){
-            console.log("password is incorrect")
-        }
-        const payload={
-            name:Users.name,
-            email:Users.email,
-            password:Users.password,
-        };
-        const token=jwt.sign(payload,process.env.JWT_SECRETKEY,{expiresIn:"1hr"});
-        return {
-            Users:Users,
-            token:token,
-        }
-    },   
-    createProduct:async({id,name,price,date_of_manufacture,date_of_expires})=>{
-        const create=await Product.create({id,name,price,date_of_manufacture,date_of_expires});
+    createProduct: async ({ id, name, price, date_of_manufacture, date_of_expires }) => {
+        const create = await Product.create({ id, name, price, date_of_manufacture, date_of_expires });
         return create;
     },
-    updateProduct:async({id,name})=>{
-        const update=await Product.update({id,name});
+    updateProduct: async ({ id, name }) => {
+        const update = await Product.update({ id, name });
         return update;
     },
-    deleteProduct:async({id})=>{
-        const deleteId=await Product.destroy({id});
+    deleteProduct: async ({ id }) => {
+        const deleteId = await Product.destroy({ id });
         return deleteId;
-    }
+    }, 
+    login:async({email,password})=>{
+        try{
+        const loginUser=await User.findOne({where:{email:email}});
+        if(!loginUser){
+            throw new Error("Invalid email");
+        }
+        const match=await bcrypt.compare(password,loginUser.password)
+        if(!match){
+            throw new Error("Invalid password");
+        }
+        const payload={
+            email:loginUser.email,
+            password:loginUser.password,
+        }
+        const token=jwt.sign(payload,process.env.JWT_SECRETKEY,{expiresIn:"1hr"})
+        return {user:{email:loginUser.email,password:loginUser.password},token:token}
+    }catch(error){
+        console.log("error")
+}
+}
 }

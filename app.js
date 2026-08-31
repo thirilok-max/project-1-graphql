@@ -14,7 +14,7 @@ app.use("/graphql",createHandler({
     rootValue:rootSchema, 
 }))
 app.listen(PORT,()=>{
-    console.log(`server is running @ http:localhost${PORT}`)
+    console.log(`server is running @ http://localhost:${PORT}`)
 })
 const server=async()=>{
     await db.sequelize.authenticate({alter:true});
