@@ -1,7 +1,8 @@
 import {buildSchema} from "graphql";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import Product from "../models/Product.js"
+import Product from "../models/Product.js";
+import jwt from "jsonwebtoken";
 
 export const schema=buildSchema(`
     type User{
@@ -48,7 +49,17 @@ export const rootSchema={
     },
     login:async({email,password})=>{
         const login=await User.findOne({where:{email:email}});
-        return login
+        const match=await bcrypt.compare(password,login.password);
+        if(!match){
+            console.log("password is wrong");
+        } 
+        const payload={
+            name:login.name,
+            email:login.email,
+            password:login.password,
+        }
+        const token=jwt.sign(JWT_SECRETKEY,payload,{expiresIn:"hrs"});
+        return login,token
     },
     createProduct:async({id,name,price,date_of_manufacture,date_of_expires})=>{
         const create=await Product.create({id,name,price,date_of_manufacture,date_of_expires});
