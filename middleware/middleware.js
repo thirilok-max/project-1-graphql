@@ -1,0 +1,22 @@
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
+
+const authenticateJWT=async(req,res,next)=>{
+    try{
+        const authHeader=req.headers.authorization;
+
+        if(!authHeader){
+            console.log("not a authHeader");
+        }
+        const token=authHeader.split(" ")[1];
+        if(!token){
+            console.log("token is missing");
+        }
+        const decoded=jwt.verify(JWT_SECRETKEY , token);
+        req.user=decoded;
+        next()
+    }catch(error){
+        console.log("error in middleware")
+    }
+}
