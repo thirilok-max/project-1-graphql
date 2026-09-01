@@ -2,7 +2,7 @@ import { buildSchema } from "graphql";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import Product from "../models/Product.js";
-import Category from "../models/Category.js";
+import Category from "./models/Category.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();

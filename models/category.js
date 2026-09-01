@@ -1,6 +1,6 @@
 import sequelize from "../config/config.js";
 import { DataTypes } from "sequelize";
-import Product from './Product.js';
+import Product from '../models/Product.js';
 const Category=sequelize.define("Category",{
     id:{
         type:DataTypes.INTEGER,
