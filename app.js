@@ -5,9 +5,11 @@ dotenv.config();
 import { createHandler} from "graphql-http/lib/use/express";
 import {schema,rootSchema} from "./schemaUsers/schema.js"
 import db from "./models/index.js";
+import { authenticateJWT } from "./middleware/middleware.js";
 const app=express();
 const PORT=process.env.PORT;
 app.use(express.json());
+app.use("/graphql", authenticateJWT);
 
 app.use("/graphql",createHandler({
     schema:schema,
