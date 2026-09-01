@@ -16,8 +16,7 @@ const Category=sequelize.define("Category",{
         allowNull:true,
     },
     userID:{
-        type:DataTypes.UUID,
-        defaultValue:DataTypes.UUIDV4,
+        type:DataTypes.INTEGER,
         allowNull:false,
         references:{
             model:Product,

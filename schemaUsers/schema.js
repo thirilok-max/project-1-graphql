@@ -2,7 +2,7 @@ import { buildSchema } from "graphql";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import Product from "../models/Product.js";
-import Category from "./models/Category.js";
+import Category from "../models/category.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
@@ -27,6 +27,7 @@ export const schema =buildSchema(`
     type Category{
         id:ID!
         name:String!
+        isActive:Boolean!
         userID:ID!
     }
 
@@ -50,7 +51,7 @@ export const schema =buildSchema(`
        deleteProduct(id:ID!):Product,
        profile(token:String!):User!,
        pagination:[User!]!,
-       category(id:ID! name:String! userID:ID!):Category,
+       category(id:ID! name:String! isActive:Boolean userID:ID!):Category,
     }
     `);
 
@@ -119,8 +120,8 @@ export const rootSchema = {
         const pagination=await User.findAll({limit:2,offset:2});
         return pagination;
     },
-    category:async({id,name,userID})=>{
-        const category=await Category.create({id,name,userID});
+    category:async({id,name,isActive,userID})=>{
+        const category=await Category.create({id,name,isActive,userID});
         return category;
     }  
 }
