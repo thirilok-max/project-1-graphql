@@ -40,7 +40,8 @@ export const schema =buildSchema(`
        createProduct(id:ID! name:String! price:String! date_of_manufacture:String! date_of_expires:String!):Product,
        updateProduct(id:ID! name:String!):Product,
        deleteProduct(id:ID!):Product,
-       profile(token:String!):User!
+       profile(token:String!):User!,
+       pagination:[User!]!
     }
     `);
 
@@ -104,5 +105,10 @@ export const rootSchema = {
         }catch(error){
             console.log("error")
         }
-}
+},
+    pagination:async()=>{
+        const pagination=await User.findAll({limit:2,offset:2});
+        return pagination;
+
+    }
 }
