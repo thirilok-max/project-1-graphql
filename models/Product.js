@@ -12,16 +12,16 @@ const Product=sequelize.define("Product",{
         allowNull:false,
     },
     price:{
-        type:DataTypes.STRING,
+        type:DataTypes.DECIMAL(10, 2),
         allowNull:false,
     },
     date_of_manufacture:{
-        type:DataTypes.STRING,
+        type:DataTypes.DATE,                                                                                                
         allowNull:false,
     },
     date_of_expires:{
-        type:DataTypes.STRING,
-        allowNull:false
-    },
+        type:DataTypes.DATE,
+        allowNull:false,
+    }   
 })
 export default Product;
