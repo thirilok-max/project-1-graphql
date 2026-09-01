@@ -8,7 +8,9 @@ import { authenticateJWT } from "./middleware/middleware.js";
 const app=express();
 const PORT=process.env.PORT;
 app.use(express.json()); 
-app.use("/graphql",authenticateJWT,createHandler({
+app.use("/graphql",
+    // authenticateJWT,
+    createHandler({
     schema:schema,
     rootValue:rootSchema, 
 }))

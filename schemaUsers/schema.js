@@ -2,7 +2,7 @@ import { buildSchema } from "graphql";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import Product from "../models/Product.js";
-// import Category from "../models/category.js";
+import Category from "../models/Category.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
@@ -19,8 +19,15 @@ export const schema =buildSchema(`
        id:ID!
        name:String!
        price:String!
+       status:String!
        date_of_manufacture:String!
        date_of_expires:String!
+    }
+
+    type Category{
+        id:ID!
+        name:String!
+        userID:ID!
     }
 
     type AuthResponse {
@@ -38,11 +45,12 @@ export const schema =buildSchema(`
     type Mutation{
        login(id:ID name:String email:String! password:String!):AuthResponse!,
        register(id:ID! name: String! email: String! password: String!):User!, 
-       createProduct(id:ID! name:String! price:String! date_of_manufacture:String! date_of_expires:String!):Product,
+       createProduct(id:ID! name:String! price:String! status:String! date_of_manufacture:String! date_of_expires:String!):Product,
        updateProduct(id:ID! name:String!):Product,
        deleteProduct(id:ID!):Product,
        profile(token:String!):User!,
-       pagination:[User!]!
+       pagination:[User!]!,
+       category(id:ID! name:String! userID:ID!):Category,
     }
     `);
 
@@ -63,8 +71,8 @@ export const rootSchema = {
          });
         return registerUser;
     },
-    createProduct: async ({ id, name, price, date_of_manufacture, date_of_expires }) => {
-        const create = await Product.create({ id, name, price, date_of_manufacture, date_of_expires });
+    createProduct: async ({ id, name, price, status, date_of_manufacture, date_of_expires }) => {
+        const create = await Product.create({ id, name, price, status, date_of_manufacture, date_of_expires });
         return create;
     },
     updateProduct: async ({ id, name }) => {
@@ -111,5 +119,8 @@ export const rootSchema = {
         const pagination=await User.findAll({limit:2,offset:2});
         return pagination;
     },
-    
+    category:async({id,name,userID})=>{
+        const category=await Category.create({id,name,userID});
+        return category;
+    }  
 }
