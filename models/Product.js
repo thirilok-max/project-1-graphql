@@ -15,6 +15,11 @@ const Product=sequelize.define("Product",{
         type:DataTypes.STRING,
         allowNull:false,
     },
+    status:{
+        type:DataTypes.ENUM("pending" , "in_progress" , "completed"), 
+        defaultValue: "pending",
+        allowNull:false,
+    },
     date_of_manufacture:{
         type:DataTypes.STRING,                                                                                                
         allowNull:false,
