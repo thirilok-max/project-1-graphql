@@ -2,6 +2,7 @@ import { buildSchema } from "graphql";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import Product from "../models/Product.js";
+// import Category from "../models/category.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
@@ -109,6 +110,6 @@ export const rootSchema = {
     pagination:async()=>{
         const pagination=await User.findAll({limit:2,offset:2});
         return pagination;
-
-    }
+    },
+    
 }
