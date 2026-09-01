@@ -1,7 +1,7 @@
 import { buildSchema } from "graphql";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import Product from "./models/Product.js";
+import Product from "../models/Product.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
@@ -40,6 +40,7 @@ export const schema =buildSchema(`
        createProduct(id:ID! name:String! price:String! date_of_manufacture:String! date_of_expires:String!):Product,
        updateProduct(id:ID! name:String!):Product,
        deleteProduct(id:ID!):Product,
+       profile(token:String!):User!
     }
     `);
 
@@ -69,7 +70,7 @@ export const rootSchema = {
         return update;
     },
     deleteProduct: async ({ id }) => {
-        const deleteId = await Product.destroy({ id });
+        const deleteId = await Product.destroy({ where: { id: id } });
         return deleteId;
     }, 
     login:async({email,password})=>{
@@ -91,5 +92,17 @@ export const rootSchema = {
     }catch(error){
         console.log("error")
 }
+},
+    profile:async({token})=>{
+        try{
+            const decoded=jwt.verify(token,process.env.JWT_SECRETKEY)
+            const user=await User.findOne({where:{email:decoded.email}})
+            if(!user){
+                throw new Error("User not found")
+            }
+            return user;
+        }catch(error){
+            console.log("error")
+        }
 }
 }
