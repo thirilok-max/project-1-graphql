@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-const authenticateJWT=async(req,res,next)=>{
+export const authenticateJWT=async(req,res,next)=>{
     try{
         const authHeader=req.headers.authorization;
 
@@ -20,3 +20,4 @@ const authenticateJWT=async(req,res,next)=>{
         console.log("error in middleware")
     }
 }
+ 

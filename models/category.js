@@ -3,8 +3,7 @@ import { DataTypes } from "sequelize";
 import Product from '../models/Product.js';
 const Category=sequelize.define("Category",{
     id:{
-        type:DataTypes.UUID,
-        defaultValue:DataTypes.UUIDV4,
+        type:DataTypes.INTEGER,
         autoIncrement:true,
         primaryKey:true,
     },
@@ -12,17 +11,12 @@ const Category=sequelize.define("Category",{
         type:DataTypes.STRING,
         allowNull:false,
     },
-    slugify:{
-        type:DataTypes.STRING,
-        unique:true,
-    },
     isActive:{
         type:DataTypes.BOOLEAN,
         allowNull:true,
     },
     userID:{
-        type:DataTypes.UUID,
-        defaultValue:DataTypes.UUIDV4,
+        type:DataTypes.INTEGER,
         allowNull:false,
         references:{
             model:Product,

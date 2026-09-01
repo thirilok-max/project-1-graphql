@@ -12,15 +12,15 @@ const Product=sequelize.define("Product",{
         allowNull:false,
     },
     price:{
-        type:DataTypes.DECIMAL(10, 2),
+        type:DataTypes.STRING,
         allowNull:false,
     },
     date_of_manufacture:{
-        type:DataTypes.DATE,                                                                                                
+        type:DataTypes.STRING,                                                                                                
         allowNull:false,
     },
     date_of_expires:{
-        type:DataTypes.DATE,
+        type:DataTypes.STRING,
         allowNull:false,
     }   
 })
