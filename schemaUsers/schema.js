@@ -3,6 +3,8 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import Product from "../models/Product.js";
 import Category from "../models/category.js";
+import Order from "../models/Order.js";
+import orderItem from "../models/orderItem.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
@@ -31,6 +33,24 @@ export const schema =buildSchema(`
         userID:ID!
     }
 
+    type Order{
+        id:ID!
+        name:String!
+        address:String!
+        totalPrice:String!
+        phoneNumber:String!
+        status:String!
+        orderID:String!
+    }
+
+    type OrderItem{
+        id:ID!
+        productName:String!
+        productPrice:String!
+        Quantity:String!
+    }
+
+
     type AuthResponse {
        user:[User!]!
        token: String!
@@ -51,39 +71,64 @@ export const schema =buildSchema(`
        deleteProduct(id:ID!):Product,
        profile(token:String!):User!,
        pagination:[User!]!,
-       category(id:ID! name:String! isActive:Boolean! userID:ID):Category,
+       category(id:ID! name:String! isActive:Boolean! userID:ID):Category!,
+       order(id:ID! name:String! address:String! totalPrice:String! phoneNumber:String! status:String! orderID:String!):Order!,
+       orderItem(id:ID! productName:String! productPrice:String! Quantity:String!):OrderItem!,
 
     }
     `);
 
 export const rootSchema = {
      User:async()=>{
+        try{
         const getAll=await User.findAll();
         return getAll;
+        }catch(error){
+            console.log("error")
+        }
     },
     Users:async(id)=>{
+        try{
         const getOne=await User.findOne({where:{id:id}});
         return getOne;
+        }catch(error){
+            console.log("error")
+        }
     },
     register: async ({ name, email, password }) => {
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds)
+        try{
+        const hashedPassword = await bcrypt.hash(password, 10);
         const registerUser = await User.create({ name, email, password
             : hashedPassword
          });
         return registerUser;
+        }catch(error){
+            console.log("error")
+        }
     },
     createProduct: async ({ id, name, price, status, date_of_manufacture, date_of_expires }) => {
+        try{
         const create = await Product.create({ id, name, price, status, date_of_manufacture, date_of_expires });
         return create;
+        }catch(error){
+            console.log("error")
+        }
     },
     updateProduct: async ({ id, name }) => {
+        try{
         const update = await Product.update({name:name }, { where: { id: id } });
         return update;
+        }catch(error){
+            console.log("error")
+        }
     },
     deleteProduct: async ({ id }) => {
+        try{
         const deleteId = await Product.destroy({ where: { id: id } });
         return deleteId;
+        }catch(error){
+            console.log("error")
+        }
     }, 
     login:async({email,password})=>{
         try{
@@ -116,17 +161,38 @@ export const rootSchema = {
         }catch(error){
             console.log("error")
         }
-},
-    pagination:async()=>{
-        const pagination=await User.findAll({limit:2,offset:2});
-        return pagination;
-    },
+}, 
     category:async({id,name,isActive,userID})=>{
+        try{
         const category=await Category.create({id,name,isActive});
         const product=await Product.findOne(  {userID:userID},{where:{id:id}});
-        if(!product){
-            console.log("product is not found")
-        }
         return category;
+    }catch(error){
+        console.log("error")
+    }
     },
+    pagination:async()=>{
+        try{
+        const pagination=await User.findAll({limit:2,offset:2});
+        return pagination;
+        }catch(error){
+            console.log("error")
+        }
+    },
+    order:async({id,name,address,totalPrice,phoneNumber,status,orderID})=>{
+        try{
+            const MyOrder=await Order.create({id,name,address,totalPrice,phoneNumber,status,orderID});
+            return MyOrder;
+        }catch(error){
+            console.log("error")
+        }
+    },
+    orderItem:async({id,productName,productPrice,Quantity})=>{
+        try{
+            const MyOrderItem=await orderItem.create({id,productName,productPrice,Quantity});
+            return MyOrderItem;
+        }catch(error){
+            console.log("error")
+        }
+    }
 }
