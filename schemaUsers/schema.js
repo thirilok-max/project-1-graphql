@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import Product from "../models/Product.js";
 import Category from "../models/category.js";
 import jwt from "jsonwebtoken";
+import orderItem from "../models/orderItem.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -31,6 +32,18 @@ export const schema =buildSchema(`
         userID:ID!
     }
 
+    type Order{
+       id:ID!
+       userID:ID!
+       totalPrice:String!
+       status:String!
+    }
+    
+    type OrderItem{
+        id:ID!
+        quantity:String!
+    }
+
     type AuthResponse {
        user:[User!]!
        token: String!
@@ -52,6 +65,9 @@ export const schema =buildSchema(`
        profile(token:String!):User!,
        pagination:[User!]!,
        category(id:ID! name:String! isActive:Boolean userID:ID!):Category,
+       Order(id:ID! userID:ID! totalPrice:String! status:String!):Order,
+       orderItem(id:ID!):OrderItem,
+
     }
     `);
 
@@ -123,5 +139,13 @@ export const rootSchema = {
     category:async({id,name,isActive,userID})=>{
         const category=await Category.create({id,name,isActive,userID});
         return category;
-    }  
+    },
+    Order:async({id,userID,totalPrice,status})=>{
+        const order=await Order.create({id,userID,totalPrice,status});
+        return order;
+    },
+    orderItem:async({id})=>{
+        const order=await OrderItem.findOne({where:{id:id}});
+        return order;
+    },
 }

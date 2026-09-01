@@ -9,7 +9,7 @@ const app=express();
 const PORT=process.env.PORT;
 app.use(express.json()); 
 app.use("/graphql",
-    authenticateJWT,
+    // authenticateJWT,
     createHandler({
     schema:schema,
     rootValue:rootSchema, 
