@@ -1,4 +1,4 @@
-  import jwt from "jsonwebtoken";
+ import jwt from "jsonwebtoken";
  import dotenv from "dotenv";
  dotenv.config();
 
@@ -23,5 +23,4 @@ export const authenticateJWT = async (req, res, next) => {
         req.send({ error: error.message });
     }
 } 
-
  

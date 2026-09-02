@@ -2,17 +2,19 @@ import express from "express";
 import dotenv from "dotenv";
 dotenv.config(); 
 import { createHandler} from "graphql-http/lib/use/express";
-import {schema,rootSchema} from "./schemaUsers/schema.js"
+import {schema,rootSchema} from "./schemaUsers/schema.js";
+import {authenticateJWT} from "./middleware/middleware.js";
 import db from "./models/index.js"; 
-import { authenticateJWT } from "./middleware/middleware.js";
+ 
 const app=express();
 const PORT=process.env.PORT;
 app.use(express.json()); 
-app.use("/graphql",
+app.use("/graphql",authenticateJWT,(req,res)=> {
     createHandler({
     schema:schema,
     rootValue:rootSchema, 
-}))
+})(req,res)
+})
  
 app.listen(PORT,()=>{
     console.log(`server is running @ http://localhost:${PORT}`)

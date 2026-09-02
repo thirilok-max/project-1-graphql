@@ -6,6 +6,7 @@ import Category from "../models/category.js";
 import Order from "../models/Order.js";
 import orderItem from "../models/orderItem.js";
 import jwt from "jsonwebtoken";
+// import {authenticateJWT} from "../middleware/middleware.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -66,7 +67,7 @@ export const schema = buildSchema(`
     type Mutation{
        login(id:ID name:String email:String! password:String!):AuthResponse!,
        register(id:ID! name: String! email: String! password: String!):User!, 
-       createProduct(id:ID! name:String! price:String! status:String! date_of_manufacture:String! date_of_expires:String!):Product!
+       createProduct(id:ID! name:String! price:String! status:String! date_of_manufacture:String! date_of_expires:String!):Product!,
        updateProduct(id:ID! name:String!):Product,
        deleteProduct(id:ID!):Product,
        profile(token:String!):User!,
@@ -81,10 +82,10 @@ export const schema = buildSchema(`
 export const rootSchema = {
     User: async () => {
         try {
-            const getAll = await User.findAll();
+            const getAll = await User.findAll({});
             return getAll;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     Users: async (id) => {
@@ -92,7 +93,7 @@ export const rootSchema = {
             const getOne = await User.findOne({ where: { id: id } });
             return getOne;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     register: async ({ name, email, password }) => {
@@ -104,23 +105,23 @@ export const rootSchema = {
             });
             return registerUser;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
-    createProduct: async ({ id, name, price, status, date_of_manufacture, date_of_expires }) => {
+    createProduct: async ({ id, name, price, status, date_of_manufacture, date_of_expires },context) => {
         try {
-            const create = await Product.create({ id, name, price, status, date_of_manufacture, date_of_expires });
-            return create;
+            const create = await Product.create({ id, name, price, status, date_of_manufacture, date_of_expires } );
+            return create; 
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     updateProduct: async ({ id, name }) => {
-        try {
+        try { 
             const update = await Product.update({ name: name }, { where: { id: id } });
             return update;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     deleteProduct: async ({ id }) => {
@@ -128,7 +129,7 @@ export const rootSchema = {
             const deleteId = await Product.destroy({ where: { id: id } });
             return deleteId;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     login: async ({ email, password }) => {
@@ -148,7 +149,7 @@ export const rootSchema = {
             const token = jwt.sign(payload, process.env.JWT_SECRETKEY, { expiresIn: "1hr" })
             return { user: { email: loginUser.email, password: loginUser.password }, token: token }
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     profile: async ({ token }) => {
@@ -160,7 +161,7 @@ export const rootSchema = {
             }
             return user;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     category: async ({ id, name, isActive, userID }) => {
@@ -169,7 +170,7 @@ export const rootSchema = {
             const product = await Product.findOne({ userID: userID }, { where: { id: id } });
             return category;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     pagination: async () => {
@@ -177,7 +178,7 @@ export const rootSchema = {
             const pagination = await User.findAll({ limit: 2, offset: 2 });
             return pagination;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     order: async ({ id, name, address, totalPrice, phoneNumber, status, orderID }) => {
@@ -185,7 +186,7 @@ export const rootSchema = {
             const MyOrder = await Order.create({ id, name, address, totalPrice, phoneNumber, status, orderID });
             return MyOrder;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     },
     orderItem: async ({ id, productName, productPrice, Quantity }) => {
@@ -193,7 +194,7 @@ export const rootSchema = {
             const MyOrderItem = await orderItem.create({ id, productName, productPrice, Quantity });
             return MyOrderItem;
         } catch (error) {
-            console.log("error")
+            console.log("error", error)
         }
     }
 }
