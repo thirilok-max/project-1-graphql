@@ -13,7 +13,7 @@ app.use("/graphql",
     schema:schema,
     rootValue:rootSchema, 
 }))
-app.use("/api/users",authenticateJWT, );
+ 
 app.listen(PORT,()=>{
     console.log(`server is running @ http://localhost:${PORT}`)
 })
